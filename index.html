@@ -511,6 +511,14 @@
         white-space: nowrap;
       }
 
+      .ref-cell span {
+        display: inline-block;
+        padding: 5px 8px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #f8fbf9;
+      }
+
       /* Loading and error states */
       .state-row td {
         padding: 58px 24px;
@@ -836,10 +844,18 @@
       }
 
       function formatRef(cell) {
-        const value = getCellValue(cell, null);
-        if (value === null || value === undefined || value === "") return "—";
-        // Use the formatted value so numeric and alphanumeric references stay intact.
-        return String(cell.f !== null && cell.f !== undefined ? cell.f : value);
+        const formatted =
+          cell && typeof cell === "object" ? cell.f : null;
+        const raw = cell && typeof cell === "object" ? cell.v : cell;
+        const value =
+          formatted !== null &&
+          formatted !== undefined &&
+          String(formatted).trim() !== ""
+            ? formatted
+            : raw;
+        if (value === null || value === undefined || String(value) === "")
+          return "—";
+        return String(value);
       }
 
       function escapeHtml(value) {
@@ -957,7 +973,7 @@
         <td class="date-cell">${escapeHtml(formatDate(dateValue))}</td>
         <td class="contributor-cell">${escapeHtml(name)}</td>
         <td><span class="badge ${badgeClass(type)}">${escapeHtml(type)}</span></td>
-        <td class="ref-cell">${escapeHtml(formatRef(referenceCell))}</td>
+        <td class="ref-cell"><span>${escapeHtml(formatRef(referenceCell))}</span></td>
         <td class="amount-cell">${formatAmount(amount)}</td>
       `;
           fragment.appendChild(tr);
