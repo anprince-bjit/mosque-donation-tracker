@@ -713,7 +713,9 @@
           aria-labelledby="countLabel"
         >
           <div>
-            <div class="card-eyebrow" id="countLabel">Contributions so far</div>
+            <div class="card-eyebrow" id="countLabel">
+              Number of Contributions
+            </div>
             <div
               class="summary-value"
               id="contributionCount"
@@ -783,10 +785,6 @@
       </section>
     </main>
 
-    <footer>
-      Public ledger &bull; Data synchronized directly from Google Sheets
-    </footer>
-
     <script>
       const SHEET_ID = "1DSPyos20vjOcLbmve1CIfYJDuVp7JiFS2lx04A7sHqk";
       const CALLBACK = "donationCallback";
@@ -844,8 +842,7 @@
       }
 
       function formatRef(cell) {
-        const formatted =
-          cell && typeof cell === "object" ? cell.f : null;
+        const formatted = cell && typeof cell === "object" ? cell.f : null;
         const raw = cell && typeof cell === "object" ? cell.v : cell;
         const value =
           formatted !== null &&
