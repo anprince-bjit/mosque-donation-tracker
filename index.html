@@ -788,7 +788,7 @@
     <script>
       const SHEET_ID = "1DSPyos20vjOcLbmve1CIfYJDuVp7JiFS2lx04A7sHqk";
       const CALLBACK = "donationCallback";
-      const GVZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json%3BresponseHandler%3A${CALLBACK}`;
+      const GVZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json%3BresponseHandler%3A${CALLBACK}&cachebust=${Date.now()}`;
 
       function badgeClass(type) {
         if (!type) return "badge-other";
