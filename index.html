@@ -946,7 +946,7 @@
         const tbody = document.getElementById("tableBody");
         const fragment = document.createDocumentFragment();
 
-        rows.forEach((row) => {
+        rows.slice().reverse().forEach((row) => {
           const cells = Array.isArray(row.c) ? row.c : [];
           const amountValue = getCellValue(getCell(cells, amountIndex), 0);
           const amount =
