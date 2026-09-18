@@ -271,6 +271,12 @@
       .summary-card-count {
         border-top: 3px solid var(--emerald-600);
       }
+      .summary-card-handover {
+        border-top: 3px solid #c94b4b;
+      }
+      .summary-card-balance {
+        border-top: 3px solid var(--emerald-700);
+      }
 
       .card-eyebrow {
         color: var(--muted);
@@ -327,6 +333,26 @@
         color: var(--emerald-700);
       }
 
+      .summary-card-handover .summary-icon {
+        background: #fff0f0;
+        color: #b33a3a;
+      }
+
+      .summary-card-balance .summary-icon {
+        background: #edf5ff;
+        color: #28649c;
+      }
+
+      .summary-card-handover .summary-value,
+      .summary-card-handover .summary-value .currency {
+        color: #b33a3a;
+      }
+
+      .summary-card-balance .summary-value,
+      .summary-card-balance .summary-value .currency {
+        color: var(--emerald-700);
+      }
+
       .summary-icon svg {
         width: 25px;
         height: 25px;
@@ -351,6 +377,30 @@
         border-radius: 22px;
         background: var(--surface);
         box-shadow: var(--shadow-sm);
+      }
+
+      .records-card-handover {
+        border-top: 3px solid #c94b4b;
+      }
+
+      .records-card-handover .records-title {
+        color: var(--ink-950);
+      }
+
+      .records-card-handover thead {
+        background: #fff5f5;
+      }
+
+      .records-card-handover tbody td {
+        color: #42574f;
+      }
+
+      .records-card-handover tbody .date-cell {
+        color: var(--ink-950);
+      }
+
+      .records-card-handover tbody .amount-cell {
+        color: #b33a3a;
       }
 
       .records-header {
@@ -608,6 +658,9 @@
           min-height: 158px;
           padding: 24px;
         }
+        .summary-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
         .summary-value {
           font-size: 2.45rem;
         }
@@ -660,7 +713,7 @@
               </svg>
             </div>
             <div>
-              <div class="brand-name">Mosque Donation Tracker</div>
+              <div class="brand-name">Pachkhola Mosque Donation Tracker</div>
               <div class="brand-subtitle">Transparent ledger</div>
             </div>
           </div>
@@ -688,7 +741,7 @@
           aria-labelledby="totalLabel"
         >
           <div>
-            <div class="card-eyebrow" id="totalLabel">Total collection</div>
+            <div class="card-eyebrow" id="totalLabel">Total contribution</div>
             <div class="summary-value" id="totalAmount" aria-live="polite">
               <span class="spinner" aria-hidden="true"></span>
               <span class="sr-only">Loading total collection</span>
@@ -741,6 +794,92 @@
             </svg>
           </div>
         </article>
+
+        <article
+          class="summary-card summary-card-handover"
+          aria-labelledby="handoverLabel"
+        >
+          <div>
+            <div class="card-eyebrow" id="handoverLabel">Handover</div>
+            <div class="summary-value" id="handoverAmount" aria-live="polite">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="sr-only">Loading handover amount</span>
+            </div>
+          </div>
+          <div class="summary-icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6M5 6v12" />
+            </svg>
+          </div>
+        </article>
+
+        <article
+          class="summary-card summary-card-balance"
+          aria-labelledby="balanceLabel"
+        >
+          <div>
+            <div class="card-eyebrow" id="balanceLabel">Balance</div>
+            <div class="summary-value" id="balanceAmount" aria-live="polite">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="sr-only">Loading balance</span>
+            </div>
+          </div>
+          <div class="summary-icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M4 7.5h16v11H4zM4 7.5l2-3h12l2 3M8 12h4M8 15.5h7" />
+            </svg>
+          </div>
+        </article>
+      </section>
+
+      <section
+        class="records-card records-card-handover"
+        aria-labelledby="handoverHeading"
+      >
+        <div class="records-header">
+          <div>
+            <h2 class="records-title" id="handoverHeading">
+              Contribution handover
+            </h2>
+            <p class="records-description">
+              A record of contributions handed over to the mosque.
+            </p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Handover Date</th>
+                <th scope="col">Handover Amount (৳)</th>
+              </tr>
+            </thead>
+            <tbody id="handoverBody" aria-live="polite">
+              <tr class="state-row">
+                <td colspan="3">
+                  <span class="spinner" aria-hidden="true"></span> Loading
+                  handover records...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section class="records-card" aria-labelledby="recordsHeading">
@@ -810,6 +949,35 @@
         return columns.findIndex((column) =>
           normalizedNames.includes(normalizeHeader(column.label || column.id)),
         );
+      }
+
+      function getNumericValue(value) {
+        const number =
+          typeof value === "number"
+            ? value
+            : Number(String(value ?? "").replace(/,/g, ""));
+        return Number.isFinite(number) ? number : null;
+      }
+
+      function findFirstNumericValue(rows, index) {
+        if (index < 0) return null;
+        for (const row of rows) {
+          const value = getNumericValue(
+            getCellValue(getCell(row.c, index), null),
+          );
+          if (value !== null) return value;
+        }
+        return null;
+      }
+
+      function sumNumericColumn(rows, index) {
+        if (index < 0) return 0;
+        return rows.reduce((total, row) => {
+          const value = getNumericValue(
+            getCellValue(getCell(row.c, index), null),
+          );
+          return total + (value === null ? 0 : value);
+        }, 0);
       }
 
       function getCell(cells, index) {
@@ -902,8 +1070,12 @@
       function showError() {
         document.getElementById("tableBody").innerHTML =
           `<tr class="state-row"><td colspan="6">Failed to load donation records. Please try refreshing the page.</td></tr>`;
+        document.getElementById("handoverBody").innerHTML =
+          `<tr class="state-row"><td colspan="3">Failed to load handover records. Please try refreshing the page.</td></tr>`;
         document.getElementById("totalAmount").textContent = "Error";
         document.getElementById("contributionCount").textContent = "—";
+        document.getElementById("handoverAmount").textContent = "—";
+        document.getElementById("balanceAmount").textContent = "—";
         const status = document.getElementById("connectionStatus");
         status.classList.add("is-error");
         status.querySelector(".live-label").textContent = "Sync unavailable";
@@ -930,6 +1102,10 @@
           "reference",
         ]);
         const amountIndex = findColumn(columns, ["amount"]);
+        // F is Total, G is handover date, and H is Handover.
+        const totalColumnIndex = 5;
+        const handoverIndex = 7;
+        const handoverDateIndex = 6;
 
         if (
           [dateIndex, nameIndex, typeIndex, referenceIndex, amountIndex].some(
@@ -944,28 +1120,53 @@
         let total = 0;
         let serial = 0;
         const tbody = document.getElementById("tableBody");
+        const handoverBody = document.getElementById("handoverBody");
         const fragment = document.createDocumentFragment();
+        const handoverFragment = document.createDocumentFragment();
+        let handoverSerial = 0;
 
-        rows.slice().reverse().forEach((row) => {
-          const cells = Array.isArray(row.c) ? row.c : [];
-          const amountValue = getCellValue(getCell(cells, amountIndex), 0);
-          const amount =
-            typeof amountValue === "number"
-              ? amountValue
-              : Number(String(amountValue).replace(/,/g, ""));
+        rows
+          .slice()
+          .reverse()
+          .forEach((row) => {
+            const cells = Array.isArray(row.c) ? row.c : [];
+            const handoverDate = getCellValue(
+              getCell(cells, handoverDateIndex),
+              null,
+            );
+            const handoverValue = getNumericValue(
+              getCellValue(getCell(cells, handoverIndex), null),
+            );
 
-          if (!Number.isFinite(amount) || amount <= 0) return;
+            if (handoverDate && handoverValue !== null) {
+              handoverSerial++;
+              const handoverRow = document.createElement("tr");
+              handoverRow.innerHTML = `
+              <td>${handoverSerial}</td>
+              <td class="date-cell">${escapeHtml(formatDate(handoverDate))}</td>
+              <td class="amount-cell">${handoverValue === null ? "—" : formatAmount(handoverValue)}</td>
+            `;
+              handoverFragment.appendChild(handoverRow);
+            }
 
-          const dateValue = getCellValue(getCell(cells, dateIndex), null);
-          const name = getCellValue(getCell(cells, nameIndex), "—");
-          const type = getCellValue(getCell(cells, typeIndex), "—");
-          const referenceCell = getCell(cells, referenceIndex);
+            const amountValue = getCellValue(getCell(cells, amountIndex), 0);
+            const amount =
+              typeof amountValue === "number"
+                ? amountValue
+                : Number(String(amountValue).replace(/,/g, ""));
 
-          total += amount;
-          serial++;
+            if (!Number.isFinite(amount) || amount <= 0) return;
 
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
+            const dateValue = getCellValue(getCell(cells, dateIndex), null);
+            const name = getCellValue(getCell(cells, nameIndex), "—");
+            const type = getCellValue(getCell(cells, typeIndex), "—");
+            const referenceCell = getCell(cells, referenceIndex);
+
+            total += amount;
+            serial++;
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
         <td>${serial}</td>
         <td class="date-cell">${escapeHtml(formatDate(dateValue))}</td>
         <td class="contributor-cell">${escapeHtml(name)}</td>
@@ -973,8 +1174,8 @@
         <td class="ref-cell"><span>${escapeHtml(formatRef(referenceCell))}</span></td>
         <td class="amount-cell">${formatAmount(amount)}</td>
       `;
-          fragment.appendChild(tr);
-        });
+            fragment.appendChild(tr);
+          });
 
         if (serial === 0) {
           const tr = document.createElement("tr");
@@ -983,14 +1184,31 @@
           fragment.appendChild(tr);
         }
 
+        if (handoverSerial === 0) {
+          const tr = document.createElement("tr");
+          tr.className = "state-row";
+          tr.innerHTML = '<td colspan="3">No handover records found.</td>';
+          handoverFragment.appendChild(tr);
+        }
+
         tbody.innerHTML = "";
         tbody.appendChild(fragment);
-
-        document.getElementById("totalAmount").innerHTML =
-          `<span class="currency">৳</span>${formatAmount(total)}`;
+        handoverBody.innerHTML = "";
+        handoverBody.appendChild(handoverFragment);
 
         document.getElementById("contributionCount").textContent =
           serial.toLocaleString("en-BD");
+
+        const handoverAmount = sumNumericColumn(rows, handoverIndex);
+        const totalContribution =
+          findFirstNumericValue(rows, totalColumnIndex) ?? total;
+        const balanceAmount = totalContribution - handoverAmount;
+        document.getElementById("totalAmount").innerHTML =
+          `<span class="currency">৳</span>${formatAmount(totalContribution)}`;
+        document.getElementById("handoverAmount").innerHTML =
+          `<span class="currency">৳</span>${formatAmount(handoverAmount)}`;
+        document.getElementById("balanceAmount").innerHTML =
+          `<span class="currency">৳</span>${formatAmount(balanceAmount)}`;
 
         const status = document.getElementById("connectionStatus");
         status.classList.remove("is-error");
